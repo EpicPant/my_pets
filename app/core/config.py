@@ -3,6 +3,7 @@
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
+from loguru import logger
 
 ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
 
@@ -41,3 +42,4 @@ class AuthSettings(BaseSettings):
 
 auth_settings = AuthSettings()
 db_settings = DBSettings()
+logger.info(db_settings.DB_URL)

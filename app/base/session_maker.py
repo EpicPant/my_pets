@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Callable
+from fastapi import Depends
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 from loguru import logger
 from app.base.database import async_session
@@ -46,8 +47,13 @@ class DBSessionManager:
             async with self.create_transaction(session):
                 yield session
 
+    @property
+    def session_dependency(self) -> Callable:
+        """get session dependency for fastapi"""
+        return Depends(self.get_session)
+
 
 database_manager = DBSessionManager(async_session)
 
-SessionDep = database_manager.get_session
+SessionDep = database_manager.session_dependency
 TransactionDep = database_manager.get_transaction

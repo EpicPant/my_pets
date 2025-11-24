@@ -3,6 +3,8 @@
 import uuid
 from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey
+from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.base.database import Base, str_uniq
@@ -25,3 +27,8 @@ class UserDAO(BaseDAO):
     """UserDAO class"""
 
     model = User
+
+    @classmethod
+    async def find_user_by_filter(cls, filter: BaseModel, session: AsyncSession):
+        user = await cls.find_all_by_filter(filter, session)
+        return user[0] if user else None

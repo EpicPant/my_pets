@@ -41,8 +41,9 @@ class BaseDAO(Generic[T]):
         """find by filter"""
         logger.info(f"Find {cls.model.__name__} by {filter.__class__.__name__}")
         filter_dict = filter.model_dump(exclude_unset=True)
+        print(filter_dict)
         try:
-            query = select(cls.model).filter_by(*filter)
+            query = select(cls.model).filter_by(**filter_dict)
             result = await session.execute(query)
             record = result.scalars().all()
             if record:
